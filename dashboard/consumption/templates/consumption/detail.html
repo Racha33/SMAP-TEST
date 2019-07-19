@@ -1,0 +1,75 @@
+{% extends "consumption/layout.html" %}
+
+{% block form %}
+
+    <h6>Please enter a valid user id below.</h6>
+    <div class="form-group">
+      <form method="post">
+      {{ form.as_p }}
+      {% csrf_token %}
+      <input type="submit" class="btn btn-primary" value="Submit">
+      </form>
+    </div>
+    <div class="row">
+        <div class="col-8"><canvas id="myChart" width="400" height="150"></canvas></div>
+    </div>
+
+
+
+{% endblock %}
+{% block line-chart %}
+
+    <script>
+        var ctx = document.getElementById("myChart").getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [
+                    {% for dt in dates %}
+                        {% if forloop.last %}
+                        "{{ dt }}"
+                        {% else %}
+                        "{{ dt }}",
+                        {% endif %}
+                    {% endfor %}
+                ],
+                datasets: [
+                	{
+                    	label: 'Total Consumption',
+                    	fill:false,
+                    	borderColor: 'rgba(255,99,132,1)',
+                    	data: [
+                    {% for cm in consumptions%}
+                        {% if forloop.last %}
+                        "{{ cm }}"
+                        {% else %}
+                        "{{ cm }}",
+                        {% endif %}
+                    {% endfor %}
+                ],
+
+                    borderWidth: 1
+               		 }
+               		 ]
+            	},
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: "Analysis for user " + {{user_id}}
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:true
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+
+
+
+
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "consumption/layout.html" %}
+
+
+{% block title %}Home · SMAP{% endblock %}
+
+{% block fullwidthheader %}
+  <div class="masthead">
+    <h1>The Full Stack Challenge</h1>
+    <p>The challenge is to implement a small analysis application with the following features:</p>
+  </div>
+{% endblock %}
+
+{% block content-home %}
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2">
+      <article>  
+        <h4> 1- Implement Import Command</h4>
+        <p>  * Components to read and store user data and consumption data.</p>
+        <p>  * Implement the command in <strong>`dashboard/consumption/management/commands/import.py` </strong>.</p>
+  		<p>  * This can be executed by running <strong>`python manage.py import`</strong> in the terminal.</p>
+        <h4> 2- Complete the summary view </h4>
+        <p>  * Implementation of an aggregation for consumption data (e.g. total/average).</p>
+        <p>  * The page should contain at least one chart and one table.</p>
+
+        <h4>Optional</h4>
+        <ol class="references">
+          <li id=" Detail view">This page should contain data for an individual consumer, For instance a line chart showing the consumption of an individual consumer, and a list of fields such as tariff, area, etc ...</li>
+        </ol>
+      </article>
+    </div>
+  </div>
+{% endblock content-home %}

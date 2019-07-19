@@ -1,0 +1,112 @@
+{% extends "consumption/layout.html" %}
+
+
+{% block container %}
+    <div class="row">
+        <h2 class="center">Report</h2>
+    </div>
+        <br>
+    <div class="row">
+        <label class="badge badge-pill badge-primary">Total Consumption {{ Total_sum  }} </label>
+        <label class="badge badge-pill badge-success">Average Consumption {{ Total_mean }} </label>
+        <label class="badge badge-pill badge-warning">Number of Users {{ Total_users }} </label>
+    </div>
+    <div class="row">
+        <div class="col-8"><canvas id="myChart" width="400" height="150"></canvas></div>
+    </div>
+    <br> <br>
+        <div class="row">
+        <div class="col-6">
+            <h5>Data</h5>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Area</th>
+                        <th>Tariff</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in query_results %}
+                    <tr>
+                        <td>{{ order.id_user }}</td>
+                        <td>{{ order.area }}</td>
+                        <td>{{ order.tariff }}</td>
+                    </tr>
+                    {% empty %}
+                        <tr></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_js %}
+
+    <script>
+        var ctx = document.getElementById("myChart").getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [
+                    {% for user in user_list %}
+                        {% if forloop.last %}
+                        "{{ user }}"
+                        {% else %}
+                        "{{ user }}",
+                        {% endif %}
+                    {% endfor %}
+                ],
+                datasets: [
+                	{
+                    	label: 'Total Consumption',
+                    	fill:false,
+                    	borderColor: 'rgba(255,99,132,1)',
+                    	data: [
+                    {% for sum in sum_list %}
+                        {% if forloop.last %}
+                        "{{ sum }}"
+                        {% else %}
+                        "{{ sum }}",
+                        {% endif %}
+                    {% endfor %}
+                ],
+
+                    borderWidth: 1
+               		 }	,
+                    {
+                        label: 'Average Consumption(*1000)',
+                        fill: false,
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        data: [
+                    {% for avg in average_list %}
+                        {% if forloop.last %}
+                        "{{ avg}}"
+                        {% else %}
+                        "{{ avg }}",
+                        {% endif %}
+                    {% endfor %}
+                ]
+                    }
+               		 ]
+            	},
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: "Analysis per user"
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:true
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+
+
+{% endblock %}
