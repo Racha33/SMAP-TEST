@@ -5,6 +5,8 @@ import pandas as pd
 from consumption.models import (User, Consumption)
 from django.core.management.base import BaseCommand
 
+
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath("user_data.csv")))
 
 
@@ -42,23 +44,23 @@ class Command(BaseCommand):
         data_folder = os.path.join(BASE_DIR, 'data/consumption')
         print(data_folder, 'data_folder')
         for data_file in os.listdir(data_folder):
-            with open(os.path.join(data_folder, data_file), encoding='utf-8') as data_file:
-                data = pd.DataFrame.from_csv(data_file)
-                id_user= (data_file.name.split("consumption/")[1].split(".")[0])
-                aggregate = int(data.sum())
-                average = int(data.mean())
+            full_path = os.path.join(data_folder, data_file)
+            data = pd.read_csv(full_path, encoding='utf-8')
+            id_user = full_path.split("consumption/")[1].split(".")[0]
+            aggregate = int(data.sum(numeric_only=True).iloc[0])
+            average = int(data.mean(numeric_only=True).iloc[0])
 
-                try:
-                	consumption, created = Consumption.objects.get_or_create(
+            try:
+                consumption, created = Consumption.objects.get_or_create(
                 		id_user= id_user,
                 		aggregate =aggregate,
                 		average = average
                 		)
-                	if created:
+                if created:
                 		consumption.save()
                 		display_format = "\nConsumption, {}, has been saved."
                 		print(display_format.format(consumption))
-                except Exception as ex:
+            except Exception as ex:
                 	print(str(ex))
                 	msg = "\n\nSomething went wrong saving consumption data: {}\n{}"
                 	print(msg)
@@ -70,8 +72,3 @@ class Command(BaseCommand):
         """
         self.import_user_from_csv_file()
         self.import_consumption_from_csv_file()
-
-
-
-
-
